@@ -137,9 +137,13 @@ a {
     margin: 5px 0;
 }
 
+#controls-container {
+    position: relative;
+    width: 100%;
+}
+
 #on-screen-controls {
     display: none; /* Hidden by default */
-    margin-top: 10px;
 }
 
 .control-button {
@@ -325,6 +329,30 @@ a {
     border: 2px solid #00d1b2;
 }
 
+/* Controls layout when placed at the bottom */
+.controls-bottom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    position: relative;
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* Controls layout when placed on the side */
+.controls-side {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 10px;
+    z-index: 1;
+}
+
 /* Media Queries for Mobile Adaptation */
 @media (max-width: 768px) {
     body {
@@ -366,8 +394,8 @@ a {
         display: block;
     }
 
-    /* Hide on-screen controls on mobile */
-    #on-screen-controls {
+    /* Hide controls container on mobile */
+    #controls-container {
         display: none;
     }
 
@@ -384,10 +412,9 @@ a {
 }
 
 @media (min-width: 769px) {
-    /* Show on-screen controls on tablets and larger screens */
-    #on-screen-controls {
-        display: flex;
-        justify-content: center;
+    /* Show controls container on tablets and larger screens */
+    #controls-container {
+        display: block;
     }
 
     /* Show info panel */

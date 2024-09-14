@@ -45,9 +45,13 @@
                     <p>You are playing for the <span id="user-side-text"></span> side.</p>
                     <p>Clear as many <span id="user-side-color"></span> blocks as possible!</p>
                 </div>
+            </div>
+            <!-- Controls Container -->
+            <div id="controls-container">
                 <!-- On-screen controls for tablets and larger screens -->
                 <div id="on-screen-controls">
                     <button id="left-button" class="control-button"><i class="fas fa-arrow-left"></i></button>
+                    <button id="rotate-ccw-button" class="control-button"><i class="fas fa-undo"></i></button>
                     <button id="rotate-button" class="control-button"><i class="fas fa-redo"></i></button>
                     <button id="right-button" class="control-button"><i class="fas fa-arrow-right"></i></button>
                     <button id="down-button" class="control-button"><i class="fas fa-arrow-down"></i></button>
@@ -95,7 +99,8 @@
                 <li><strong>Left Arrow / Left Button</strong>: Move left</li>
                 <li><strong>Right Arrow / Right Button</strong>: Move right</li>
                 <li><strong>Down Arrow / Down Button</strong>: Move down faster</li>
-                <li><strong>Up Arrow / Rotate Button</strong>: Rotate the block</li>
+                <li><strong>Up Arrow / Rotate Button</strong>: Rotate the block clockwise</li>
+                <li><strong>'Z' Key / Rotate CCW Button</strong>: Rotate the block counter-clockwise</li>
                 <li><strong>'P' Key or Pause Button</strong>: Pause/Resume the game</li>
             </ul>
             <p>Plan ahead by looking at the Next Piece displayed on the right.</p>
