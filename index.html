@@ -23,6 +23,11 @@
         <div id="game-area">
             <div id="canvas-container">
                 <canvas id="game-canvas" width="300" height="600"></canvas>
+                <!-- User's Side Display -->
+                <div id="user-side-display">
+                    <p>You are playing for the <span id="user-side-text"></span> side.</p>
+                    <p>Clear as many <span id="user-side-color"></span> blocks as possible!</p>
+                </div>
             </div>
             <div id="info-panel">
                 <div id="current-politician">
@@ -41,6 +46,15 @@
                     <p id="next-politician-party"></p>
                 </div>
                 <div id="score-board">Score: 0</div>
+                <!-- Statistics Display -->
+                <div id="statistics">
+                    <h3>Statistics</h3>
+                    <p>Total Lines Cleared: <span id="total-lines-cleared">0</span></p>
+                    <p>Lines Cleared by Democrats: <span id="dem-lines-cleared">0</span></p>
+                    <p>Lines Cleared by Republicans: <span id="rep-lines-cleared">0</span></p>
+                    <p>Democrat Pieces Released: <span id="dem-pieces-released">0</span></p>
+                    <p>Republican Pieces Released: <span id="rep-pieces-released">0</span></p>
+                </div>
                 <div id="announcement"></div>
                 <button id="pause-button" class="control-button"><i class="fas fa-pause"></i> Pause</button>
             </div>

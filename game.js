@@ -22,6 +22,13 @@ $(document).ready(function() {
     let piecesSpawned = 0; // Keep track of how many pieces have been spawned
     let gameEnded = false; // Flag to ensure endGame() is called only once
 
+    // Statistics variables
+    let totalLinesCleared = 0;
+    let demLinesCleared = 0;
+    let repLinesCleared = 0;
+    let demPiecesReleased = 0;
+    let repPiecesReleased = 0;
+
     // Load sound effects
     const sounds = {
         move: new Audio('sounds/move.mp3'),
@@ -251,24 +258,32 @@ $(document).ready(function() {
     // Side selection
     $('#democrat-button').click(function() {
         userSide = 'democrat';
+        $('#user-side-text').text('Democrat');
+        $('#user-side-color').text('blue');
+        $('#user-side-color').css('color', '#0074d9');
         $('#side-selection').hide();
         $('#game-canvas').show();
         $('#score-board').show();
         $('#pause-button').show();
         $('#leaderboard').show();
         $('#mobile-controls').show();
+        $('#user-side-display').show();
         resizeCanvas();
         startGame();
     });
 
     $('#republican-button').click(function() {
         userSide = 'republican';
+        $('#user-side-text').text('Republican');
+        $('#user-side-color').text('red');
+        $('#user-side-color').css('color', '#ff4136');
         $('#side-selection').hide();
         $('#game-canvas').show();
         $('#score-board').show();
         $('#pause-button').show();
         $('#leaderboard').show();
         $('#mobile-controls').show();
+        $('#user-side-display').show();
         resizeCanvas();
         startGame();
     });
@@ -282,6 +297,14 @@ $(document).ready(function() {
         gameOver = false;
         gameEnded = false;
         piecesSpawned = 0;
+
+        // Reset statistics
+        totalLinesCleared = 0;
+        demLinesCleared = 0;
+        repLinesCleared = 0;
+        demPiecesReleased = 0;
+        repPiecesReleased = 0;
+        updateStatistics();
 
         // Initialize grid
         grid = [];
@@ -324,6 +347,14 @@ $(document).ready(function() {
         // Choose a random side
         const sides = ['democrat', 'republican'];
         const side = sides[Math.floor(Math.random() * sides.length)];
+
+        // Update pieces released statistics
+        if (side === 'democrat') {
+            demPiecesReleased++;
+        } else {
+            repPiecesReleased++;
+        }
+        updateStatistics();
 
         // Choose a random politician from the side
         const politicianList = availablePoliticians[side];
@@ -572,6 +603,15 @@ $(document).ready(function() {
                     }
                 }
 
+                // Update lines cleared statistics
+                totalLinesCleared++;
+                if (sideCount['democrat'] > sideCount['republican']) {
+                    demLinesCleared++;
+                } else if (sideCount['republican'] > sideCount['democrat']) {
+                    repLinesCleared++;
+                }
+                updateStatistics();
+
                 // Remove the completed row
                 grid.splice(row, 1);
                 // Add a new empty row at the top
@@ -604,6 +644,14 @@ $(document).ready(function() {
 
     function updateScore() {
         $('#score-board').text('Score: ' + score);
+    }
+
+    function updateStatistics() {
+        $('#total-lines-cleared').text(totalLinesCleared);
+        $('#dem-lines-cleared').text(demLinesCleared);
+        $('#rep-lines-cleared').text(repLinesCleared);
+        $('#dem-pieces-released').text(demPiecesReleased);
+        $('#rep-pieces-released').text(repPiecesReleased);
     }
 
     function handleInput(e) {
