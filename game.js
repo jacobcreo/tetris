@@ -32,6 +32,9 @@ $(document).ready(function() {
     let demPiecesReleased = 0;
     let repPiecesReleased = 0;
 
+    // Recent pieces for balancing piece generation
+    let recentPieces = []; // Stores the sides of the last 16 pieces
+
     // Load sound effects
     const sounds = {
         move: new Audio('sounds/move.mp3'),
@@ -305,6 +308,7 @@ $(document).ready(function() {
         gameOver = false;
         gameEnded = false;
         piecesSpawned = 0;
+        recentPieces = []; // Reset recent pieces
 
         // Reset statistics
         totalLinesCleared = 0;
@@ -360,15 +364,53 @@ $(document).ready(function() {
     }
 
     function preventScroll(e) {
-        if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+        if ([32, 37, 38, 39, 40, 90, 88].indexOf(e.keyCode) > -1) {
             e.preventDefault();
         }
     }
 
+    function getAdjustedProbabilities() {
+        if (recentPieces.length < 8) {
+            // Less than 8 pieces, use equal probability
+            return { democrat: 0.5, republican: 0.5 };
+        } else {
+            // Calculate the ratio in the last 8 pieces
+            let last8 = recentPieces.slice(-8);
+            let demCount = last8.filter(side => side === 'democrat').length;
+            let repCount = last8.filter(side => side === 'republican').length;
+
+            // Calculate the percentages
+            let demPercentage = demCount / 8;
+            let repPercentage = repCount / 8;
+
+            // The next 8 pieces should offset the previous 8
+            // So we set the probabilities to the percentages of the opposite side
+            return {
+                democrat: repPercentage,
+                republican: demPercentage
+            };
+        }
+    }
+
     function generateRandomPiece() {
-        // Choose a random side
-        const sides = ['democrat', 'republican'];
-        const side = sides[Math.floor(Math.random() * sides.length)];
+        // Get adjusted probabilities
+        let probabilities = getAdjustedProbabilities();
+
+        // Choose a random side based on adjusted probabilities
+        let randomValue = Math.random();
+        let side;
+        if (randomValue < probabilities.democrat) {
+            side = 'democrat';
+        } else {
+            side = 'republican';
+        }
+
+        // Update recentPieces
+        recentPieces.push(side);
+        // Limit recentPieces to the last 16 entries
+        if (recentPieces.length > 16) {
+            recentPieces.shift(); // Remove oldest piece
+        }
 
         // Update pieces released statistics
         if (side === 'democrat') {
@@ -710,7 +752,11 @@ $(document).ready(function() {
                 movePieceDown();
                 break;
             case 38: // Up arrow
-                rotatePiece();
+            case 88: // 'X' key
+                rotatePiece(); // Rotate clockwise
+                break;
+            case 90: // 'Z' key
+                rotatePieceCounterClockwise(); // Rotate counter-clockwise
                 break;
             case 80: // 'P' key
                 togglePause();
@@ -736,6 +782,28 @@ $(document).ready(function() {
             rotatedShape[col] = [];
             for (let row = shape.length - 1; row >= 0; row--) {
                 rotatedShape[col][shape.length - 1 - row] = shape[row][col];
+            }
+        }
+
+        const oldShape = currentPiece.shape;
+        currentPiece.shape = rotatedShape;
+
+        if (checkCollision()) {
+            currentPiece.shape = oldShape;
+        } else {
+            sounds.rotate.play();
+        }
+        draw(); // Redraw after rotating
+    }
+
+    function rotatePieceCounterClockwise() {
+        const shape = currentPiece.shape;
+        const rotatedShape = [];
+
+        for (let col = shape[0].length - 1; col >= 0; col--) {
+            rotatedShape[shape[0].length - 1 - col] = [];
+            for (let row = 0; row < shape.length; row++) {
+                rotatedShape[shape[0].length - 1 - col][row] = shape[row][col];
             }
         }
 
@@ -831,18 +899,6 @@ $(document).ready(function() {
             }
         }
 
-        // Get the politician's image source
-        let politicianImageSrc = '';
-        if (impactfulPolitician) {
-            for (let side in politicians) {
-                let pol = politicians[side].find(p => p.name === impactfulPolitician);
-                if (pol) {
-                    politicianImageSrc = pol.imageSrc;
-                    break;
-                }
-            }
-        }
-
         // Prepare the share message
         let shareMessageTemplate = getRandomElement(shareMessages);
         let shareMessage = shareMessageTemplate.replace('{score}', score)
@@ -850,8 +906,26 @@ $(document).ready(function() {
 
         // Update the game over modal
         $('#final-score').text('Your final score is ' + score);
-        $('#impactful-politician-image').attr('src', politicianImageSrc);
-        $('#impactful-politician-name').text('Most impactful: ' + impactfulPolitician);
+
+        if (score === 0 && !impactfulPolitician) {
+            // Do not reference the most impactful politician
+            $('#impactful-politician-image').hide();
+            $('#impactful-politician-name').text('');
+        } else {
+            // Get the politician's image source
+            let politicianImageSrc = '';
+            if (impactfulPolitician) {
+                for (let side in politicians) {
+                    let pol = politicians[side].find(p => p.name === impactfulPolitician);
+                    if (pol) {
+                        politicianImageSrc = pol.imageSrc;
+                        break;
+                    }
+                }
+            }
+            $('#impactful-politician-image').attr('src', politicianImageSrc).show();
+            $('#impactful-politician-name').text('Most impactful: ' + impactfulPolitician);
+        }
 
         // Check if this is a new high score
         let highScore = getHighScore();
@@ -942,6 +1016,9 @@ $(document).ready(function() {
         canvas.height = height;
         blockSize = width / gridWidth;
 
+        // Adjust controls layout based on screen dimensions
+        adjustControlsLayout();
+
         // **Only call draw() if grid is initialized**
         if (grid && grid.length > 0) {
             draw(); // Redraw after resizing
@@ -949,6 +1026,19 @@ $(document).ready(function() {
     }
 
     window.addEventListener('resize', resizeCanvas);
+
+    function adjustControlsLayout() {
+        const windowWidth = $(window).width();
+        const windowHeight = $(window).height();
+
+        if (windowWidth > windowHeight) {
+            // Wide screen, place controls on the sides
+            $('#controls-container').addClass('controls-side').removeClass('controls-bottom');
+        } else {
+            // Tall screen, place controls at the bottom
+            $('#controls-container').addClass('controls-bottom').removeClass('controls-side');
+        }
+    }
 
     // Touch Controls using Hammer.js
     let mc; // Hammer manager
@@ -1025,6 +1115,12 @@ $(document).ready(function() {
         $('#rotate-button').off().on('touchstart mousedown', function(e) {
             e.preventDefault();
             rotatePiece();
+        });
+
+        // Add counter-clockwise rotate button
+        $('#rotate-ccw-button').off().on('touchstart mousedown', function(e) {
+            e.preventDefault();
+            rotatePieceCounterClockwise();
         });
     }
 
