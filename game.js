@@ -275,6 +275,7 @@ $(document).ready(function() {
         $('#pause-button').show();
         $('#leaderboard').show();
         $('#user-side-display').show();
+        $('#statistics').show(); // Show statistics
         resizeCanvas();
         startGame();
     });
@@ -290,6 +291,7 @@ $(document).ready(function() {
         $('#pause-button').show();
         $('#leaderboard').show();
         $('#user-side-display').show();
+        $('#statistics').show(); // Show statistics
         resizeCanvas();
         startGame();
     });
@@ -349,10 +351,8 @@ $(document).ready(function() {
         // Initialize touch controls
         initTouchControls();
 
-        // Initialize on-screen buttons if not mobile
-        if (!isMobile) {
-            initOnScreenButtons();
-        }
+        // Initialize on-screen buttons
+        initOnScreenButtons();
 
         // Handle window focus and visibility change
         document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -690,6 +690,7 @@ $(document).ready(function() {
     }
 
     function updateStatistics() {
+        // Update the statistics in the UI
         $('#total-lines-cleared').text(totalLinesCleared);
         $('#dem-lines-cleared').text(demLinesCleared);
         $('#rep-lines-cleared').text(repLinesCleared);
@@ -698,7 +699,7 @@ $(document).ready(function() {
     }
 
     function handleInput(e) {
-        switch(e.keyCode) {
+        switch (e.keyCode) {
             case 37: // Left arrow
                 movePiece(-1);
                 break;
@@ -724,6 +725,7 @@ $(document).ready(function() {
         } else {
             sounds.move.play();
         }
+        draw(); // Redraw after moving
     }
 
     function rotatePiece() {
@@ -745,6 +747,7 @@ $(document).ready(function() {
         } else {
             sounds.rotate.play();
         }
+        draw(); // Redraw after rotating
     }
 
     function draw() {
@@ -897,6 +900,11 @@ $(document).ready(function() {
     function togglePause() {
         isPaused = !isPaused;
         $('#pause-button').html(isPaused ? '<i class="fas fa-play"></i> Resume' : '<i class="fas fa-pause"></i> Pause');
+        if (isPaused) {
+            clearInterval(gameInterval);
+        } else {
+            gameInterval = setInterval(gameLoop, gameSpeed);
+        }
     }
 
     $('#pause-button').click(function() {
@@ -925,6 +933,7 @@ $(document).ready(function() {
         canvas.width = width;
         canvas.height = height;
         blockSize = width / gridWidth;
+        draw(); // Redraw after resizing
     }
 
     window.addEventListener('resize', resizeCanvas);
@@ -985,22 +994,23 @@ $(document).ready(function() {
 
     // Initialize on-screen buttons for tablets and larger screens
     function initOnScreenButtons() {
-        $('#left-button').on('touchstart mousedown', function(e) {
+        // Use event delegation for better performance
+        $('#left-button').off().on('touchstart mousedown', function(e) {
             e.preventDefault();
             movePiece(-1);
         });
 
-        $('#right-button').on('touchstart mousedown', function(e) {
+        $('#right-button').off().on('touchstart mousedown', function(e) {
             e.preventDefault();
             movePiece(1);
         });
 
-        $('#down-button').on('touchstart mousedown', function(e) {
+        $('#down-button').off().on('touchstart mousedown', function(e) {
             e.preventDefault();
             movePieceDown();
         });
 
-        $('#rotate-button').on('touchstart mousedown', function(e) {
+        $('#rotate-button').off().on('touchstart mousedown', function(e) {
             e.preventDefault();
             rotatePiece();
         });
