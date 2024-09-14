@@ -36,42 +36,42 @@ $(document).ready(function() {
             {
                 name: 'Kamala Harris',
                 party: 'Democrat',
-                color: '#0000FF',
+                color: '#0074d9', // Updated colors to match new design
                 imageSrc: 'images/kamala.png',
                 image: new Image()
             },
             {
                 name: 'Tim Walz',
                 party: 'Democrat',
-                color: '#0000FF',
+                color: '#0074d9',
                 imageSrc: 'images/walz.png',
                 image: new Image()
             },
             {
                 name: 'Joe Biden',
                 party: 'Democrat',
-                color: '#0000FF',
+                color: '#0074d9',
                 imageSrc: 'images/biden.png',
                 image: new Image()
             },
             {
                 name: 'Taylor Swift',
                 party: 'Democrat',
-                color: '#0000FF',
+                color: '#0074d9',
                 imageSrc: 'images/taylor.png',
                 image: new Image()
             },
             {
                 name: 'Nancy Pelosi',
                 party: 'Democrat',
-                color: '#0000FF',
+                color: '#0074d9',
                 imageSrc: 'images/pelosi.png',
                 image: new Image()
             },
             {
                 name: 'Beyoncé',
                 party: 'Democrat',
-                color: '#0000FF',
+                color: '#0074d9',
                 imageSrc: 'images/beyonce.png',
                 image: new Image()
             }
@@ -80,42 +80,42 @@ $(document).ready(function() {
             {
                 name: 'Donald Trump',
                 party: 'Republican',
-                color: '#FF0000',
+                color: '#ff4136',
                 imageSrc: 'images/trump.png',
                 image: new Image()
             },
             {
                 name: 'JD Vance',
                 party: 'Republican',
-                color: '#FF0000',
+                color: '#ff4136',
                 imageSrc: 'images/vance.png',
                 image: new Image()
             },
             {
                 name: 'Ted Cruz',
                 party: 'Republican',
-                color: '#FF0000',
+                color: '#ff4136',
                 imageSrc: 'images/cruz.png',
                 image: new Image()
             },
             {
                 name: 'Elon Musk',
                 party: 'Republican',
-                color: '#FF0000',
+                color: '#ff4136',
                 imageSrc: 'images/elon.png',
                 image: new Image()
             },
             {
                 name: 'Ben Shapiro',
                 party: 'Republican',
-                color: '#FF0000',
+                color: '#ff4136',
                 imageSrc: 'images/shapiro.png',
                 image: new Image()
             },
             {
                 name: 'Kanye West',
                 party: 'Republican',
-                color: '#FF0000',
+                color: '#ff4136',
                 imageSrc: 'images/kanye.png',
                 image: new Image()
             }
@@ -509,9 +509,7 @@ $(document).ready(function() {
 
     function clearLines() {
         let linesCleared = 0;
-        let totalPointsChanged = 0;
         let messages = [];
-        let politiciansInvolved = {};
 
         for (let row = gridHeight - 1; row >= 0; row--) {
             if (grid[row].every(cell => cell !== null)) {
@@ -529,11 +527,12 @@ $(document).ready(function() {
                     } else {
                         politicianCount[politicianName] = 1;
                     }
-                    // Track politicians involved
-                    if (politiciansInvolved[politicianName]) {
-                        politiciansInvolved[politicianName]++;
+
+                    // Update politician score count
+                    if (politicianScoreCount[politicianName]) {
+                        politicianScoreCount[politicianName] += 0; // No score change here
                     } else {
-                        politiciansInvolved[politicianName] = 1;
+                        politicianScoreCount[politicianName] = 0;
                     }
                 }
 
@@ -563,14 +562,13 @@ $(document).ready(function() {
                     pointsChanged = -100;
                     messages.push(getRandomElement(negativeAnnouncements));
                 }
-                totalPointsChanged += pointsChanged;
 
                 // Update politician score count
                 for (let polName in politicianCount) {
                     if (politicianScoreCount[polName]) {
-                        politicianScoreCount[polName] += pointsChanged;
+                        politicianScoreCount[polName] += pointsChanged / Object.keys(politicianCount).length;
                     } else {
-                        politicianScoreCount[polName] = pointsChanged;
+                        politicianScoreCount[polName] = pointsChanged / Object.keys(politicianCount).length;
                     }
                 }
 
@@ -789,15 +787,6 @@ $(document).ready(function() {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
-    // Save score to local storage
-    function saveScore(newScore) {
-        let scores = JSON.parse(localStorage.getItem('politicianTetrisScores')) || [];
-        scores.push(newScore);
-        scores.sort(function(a, b) { return b - a; });
-        scores = scores.slice(0, 5); // Keep top 5 scores
-        localStorage.setItem('politicianTetrisScores', JSON.stringify(scores));
-    }
-
     // Update leaderboard
     function updateLeaderboard() {
         let scores = JSON.parse(localStorage.getItem('politicianTetrisScores')) || [];
@@ -809,7 +798,7 @@ $(document).ready(function() {
 
     function togglePause() {
         isPaused = !isPaused;
-        $('#pause-button').text(isPaused ? 'Resume' : 'Pause');
+        $('#pause-button').html(isPaused ? '<i class="fas fa-play"></i> Resume' : '<i class="fas fa-pause"></i> Pause');
     }
 
     $('#pause-button').click(function() {

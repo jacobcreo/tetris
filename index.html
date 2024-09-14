@@ -6,6 +6,10 @@
     <link rel="stylesheet" href="styles.css">
     <!-- Viewport meta tag for mobile responsiveness -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Include Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <!-- Include Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 </head>
 <body>
 
@@ -13,32 +17,42 @@
         <h1>Politician Tetris</h1>
         <div id="side-selection">
             <p>Select Your Side:</p>
-            <button id="democrat-button">Democrat</button>
-            <button id="republican-button">Republican</button>
+            <button id="democrat-button" class="side-button democrat"><i class="fas fa-dove"></i> Democrat</button>
+            <button id="republican-button" class="side-button republican"><i class="fas fa-elephant"></i> Republican</button>
         </div>
         <div id="game-area">
             <div id="canvas-container">
                 <canvas id="game-canvas" width="300" height="600"></canvas>
             </div>
-            <div id="current-politician">
-                <!-- Display current falling piece's politician -->
-                <h3>Current Piece</h3>
-                <img id="politician-image" src="" alt="">
-                <p id="politician-name"></p>
-                <p id="politician-party"></p>
-            </div>
-            <div id="next-piece">
-                <!-- Display next piece's shape and politician -->
-                <h3>Next Piece</h3>
-                <canvas id="next-canvas" width="100" height="100"></canvas>
-                <img id="next-politician-image" src="" alt="">
-                <p id="next-politician-name"></p>
-                <p id="next-politician-party"></p>
+            <div id="info-panel">
+                <div id="current-politician">
+                    <!-- Display current falling piece's politician -->
+                    <h3>Current Piece</h3>
+                    <img id="politician-image" src="" alt="">
+                    <p id="politician-name"></p>
+                    <p id="politician-party"></p>
+                </div>
+                <div id="next-piece">
+                    <!-- Display next piece's shape and politician -->
+                    <h3>Next Piece</h3>
+                    <canvas id="next-canvas" width="100" height="100"></canvas>
+                    <img id="next-politician-image" src="" alt="">
+                    <p id="next-politician-name"></p>
+                    <p id="next-politician-party"></p>
+                </div>
+                <div id="score-board">Score: 0</div>
+                <div id="announcement"></div>
+                <button id="pause-button" class="control-button"><i class="fas fa-pause"></i> Pause</button>
             </div>
         </div>
-        <div id="score-board">Score: 0</div>
-        <div id="announcement"></div>
-        <button id="pause-button">Pause</button>
+
+        <!-- On-screen controls for mobile devices -->
+        <div id="mobile-controls">
+            <button id="left-button" class="mobile-button"><i class="fas fa-arrow-left"></i></button>
+            <button id="rotate-button" class="mobile-button"><i class="fas fa-sync-alt"></i></button>
+            <button id="right-button" class="mobile-button"><i class="fas fa-arrow-right"></i></button>
+            <button id="down-button" class="mobile-button"><i class="fas fa-arrow-down"></i></button>
+        </div>
     </div>
 
     <!-- Instructions Modal -->
@@ -57,16 +71,8 @@
             <p>Plan ahead by looking at the Next Piece displayed on the right.</p>
             <p>Complete rows to score points. If the majority of the blocks in a completed row are from your chosen side, you gain points; otherwise, you lose points. Clear a row with all the same politician for bonus points!</p>
             <p>New politicians will join the game as you progress. Good luck!</p>
-            <button id="start-game-button">Start Game</button>
+            <button id="start-game-button" class="control-button"><i class="fas fa-play"></i> Start Game</button>
         </div>
-    </div>
-
-    <!-- On-screen controls for mobile devices -->
-    <div id="mobile-controls">
-        <button id="left-button">Left</button>
-        <button id="rotate-button">Rotate</button>
-        <button id="right-button">Right</button>
-        <button id="down-button">Down</button>
     </div>
 
     <!-- Game Over Modal -->
@@ -77,14 +83,14 @@
             <p id="record-message"></p>
             <img id="impactful-politician-image" src="" alt="" style="width: 100px; height: 100px;">
             <p id="impactful-politician-name"></p>
-            <button id="share-button-modal">Share on Twitter</button>
-            <button id="play-again-button">Play Again</button>
+            <button id="share-button-modal" class="control-button"><i class="fab fa-twitter"></i> Share on Twitter</button>
+            <button id="play-again-button" class="control-button"><i class="fas fa-redo"></i> Play Again</button>
         </div>
     </div>
 
     <!-- Leaderboard -->
     <div id="leaderboard">
-        <h2>Leaderboard</h2>
+        <h2><i class="fas fa-trophy"></i> Leaderboard</h2>
         <ol id="leaderboard-list"></ol>
     </div>
 
