@@ -32,9 +32,6 @@ $(document).ready(function() {
     let demPiecesReleased = 0;
     let repPiecesReleased = 0;
 
-    // Recent pieces for balancing piece generation
-    let recentPieces = []; // Stores the sides of the last 16 pieces
-
     // Load sound effects
     const sounds = {
         move: new Audio('sounds/move.mp3'),
@@ -308,7 +305,6 @@ $(document).ready(function() {
         gameOver = false;
         gameEnded = false;
         piecesSpawned = 0;
-        recentPieces = []; // Reset recent pieces
 
         // Reset statistics
         totalLinesCleared = 0;
@@ -369,48 +365,10 @@ $(document).ready(function() {
         }
     }
 
-    function getAdjustedProbabilities() {
-        if (recentPieces.length < 8) {
-            // Less than 8 pieces, use equal probability
-            return { democrat: 0.5, republican: 0.5 };
-        } else {
-            // Calculate the ratio in the last 8 pieces
-            let last8 = recentPieces.slice(-8);
-            let demCount = last8.filter(side => side === 'democrat').length;
-            let repCount = last8.filter(side => side === 'republican').length;
-
-            // Calculate the percentages
-            let demPercentage = demCount / 8;
-            let repPercentage = repCount / 8;
-
-            // The next 8 pieces should offset the previous 8
-            // So we set the probabilities to the percentages of the opposite side
-            return {
-                democrat: repPercentage,
-                republican: demPercentage
-            };
-        }
-    }
-
     function generateRandomPiece() {
-        // Get adjusted probabilities
-        let probabilities = getAdjustedProbabilities();
-
-        // Choose a random side based on adjusted probabilities
-        let randomValue = Math.random();
-        let side;
-        if (randomValue < probabilities.democrat) {
-            side = 'democrat';
-        } else {
-            side = 'republican';
-        }
-
-        // Update recentPieces
-        recentPieces.push(side);
-        // Limit recentPieces to the last 16 entries
-        if (recentPieces.length > 16) {
-            recentPieces.shift(); // Remove oldest piece
-        }
+        // Choose a random side
+        const sides = ['democrat', 'republican'];
+        const side = sides[Math.floor(Math.random() * sides.length)];
 
         // Update pieces released statistics
         if (side === 'democrat') {
@@ -899,6 +857,18 @@ $(document).ready(function() {
             }
         }
 
+        // Get the politician's image source
+        let politicianImageSrc = '';
+        if (impactfulPolitician) {
+            for (let side in politicians) {
+                let pol = politicians[side].find(p => p.name === impactfulPolitician);
+                if (pol) {
+                    politicianImageSrc = pol.imageSrc;
+                    break;
+                }
+            }
+        }
+
         // Prepare the share message
         let shareMessageTemplate = getRandomElement(shareMessages);
         let shareMessage = shareMessageTemplate.replace('{score}', score)
@@ -906,25 +876,12 @@ $(document).ready(function() {
 
         // Update the game over modal
         $('#final-score').text('Your final score is ' + score);
-
-        if (score === 0 && !impactfulPolitician) {
-            // Do not reference the most impactful politician
-            $('#impactful-politician-image').hide();
-            $('#impactful-politician-name').text('');
-        } else {
-            // Get the politician's image source
-            let politicianImageSrc = '';
-            if (impactfulPolitician) {
-                for (let side in politicians) {
-                    let pol = politicians[side].find(p => p.name === impactfulPolitician);
-                    if (pol) {
-                        politicianImageSrc = pol.imageSrc;
-                        break;
-                    }
-                }
-            }
+        if (politicianImageSrc) {
             $('#impactful-politician-image').attr('src', politicianImageSrc).show();
             $('#impactful-politician-name').text('Most impactful: ' + impactfulPolitician);
+        } else {
+            $('#impactful-politician-image').hide();
+            $('#impactful-politician-name').text('');
         }
 
         // Check if this is a new high score
@@ -1032,11 +989,27 @@ $(document).ready(function() {
         const windowHeight = $(window).height();
 
         if (windowWidth > windowHeight) {
-            // Wide screen, place controls on the sides
-            $('#controls-container').addClass('controls-side').removeClass('controls-bottom');
+            // Wide screen, place controls next to the canvas
+            $('#controls-container').css({
+                'flex-direction': 'column',
+                'margin-left': '20px',
+                'margin-top': '0'
+            });
+            $('#game-area').css({
+                'flex-direction': 'row',
+                'align-items': 'flex-start'
+            });
         } else {
-            // Tall screen, place controls at the bottom
-            $('#controls-container').addClass('controls-bottom').removeClass('controls-side');
+            // Tall screen, place controls below the canvas
+            $('#controls-container').css({
+                'flex-direction': 'row',
+                'margin-left': '0',
+                'margin-top': '20px'
+            });
+            $('#game-area').css({
+                'flex-direction': 'column',
+                'align-items': 'center'
+            });
         }
     }
 

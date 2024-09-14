@@ -12,7 +12,7 @@ body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    overflow: hidden; /* Prevent scrolling */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
     color: #ffffff;
     -ms-touch-action: manipulation; /* Disable double-tap zoom for IE */
     touch-action: manipulation; /* Disable double-tap zoom */
@@ -138,12 +138,10 @@ a {
 }
 
 #controls-container {
-    position: relative;
-    width: 100%;
-}
-
-#on-screen-controls {
-    display: none; /* Hidden by default */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
 }
 
 .control-button {
@@ -204,6 +202,18 @@ a {
     color: #00d1b2;
 }
 
+#announcement {
+    margin-top: 20px;
+    font-size: 1.2em;
+    height: auto;
+    max-width: 400px;
+}
+
+#pause-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+}
+
 #statistics {
     margin-top: 20px;
     text-align: left;
@@ -222,18 +232,6 @@ a {
 #statistics p {
     margin: 5px 0;
     font-size: 0.9em;
-}
-
-#announcement {
-    margin-top: 20px;
-    font-size: 1.2em;
-    height: auto;
-    max-width: 400px;
-}
-
-#pause-button {
-    margin-top: 20px;
-    padding: 10px 20px;
 }
 
 #leaderboard {
@@ -264,9 +262,9 @@ a {
 
 /* Modal styling */
 .modal {
-    display: block; /* Show the modal by default */
+    display: none; /* Hidden by default */
     position: fixed;
-    z-index: 2; /* Higher than the game elements */
+    z-index: 1000; /* Higher than the game elements */
     left: 0;
     top: 0;
     width: 100%;
@@ -277,13 +275,14 @@ a {
 
 .modal-content {
     background-color: #2e2e2e;
-    margin: 10% auto;
+    margin: 5% auto;
     padding: 30px;
-    width: 80%;
+    width: 90%;
     max-width: 600px;
     text-align: center;
     border-radius: 10px;
     color: #ffffff;
+    position: relative;
 }
 
 .modal-content h2 {
@@ -308,7 +307,9 @@ a {
 
 .close-button {
     color: #ffffff;
-    float: right;
+    position: absolute;
+    right: 20px;
+    top: 20px;
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
@@ -319,42 +320,32 @@ a {
     color: #00d1b2;
 }
 
-#game-over-modal {
-    display: none; /* Hidden by default */
-}
-
 #game-over-modal img {
     margin: 20px 0;
     border-radius: 50%;
     border: 2px solid #00d1b2;
+    display: none; /* Hidden by default */
 }
 
-/* Controls layout when placed at the bottom */
-.controls-bottom {
+#game-over-modal #impactful-politician-image {
+    display: none; /* Hidden by default */
+}
+
+#game-over-modal #impactful-politician-name {
+    margin-bottom: 20px;
+    font-size: 1.1em;
+}
+
+/* Controls Layout */
+#controls-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: row;
-    position: relative;
-    width: 100%;
-    margin-top: 10px;
-}
-
-/* Controls layout when placed on the side */
-.controls-side {
-    display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 10px;
-    z-index: 1;
 }
 
-/* Media Queries for Mobile Adaptation */
-@media (max-width: 768px) {
+/* Responsive Design */
+@media only screen and (max-width: 768px) {
     body {
         overflow-y: auto; /* Allow vertical scrolling on mobile */
     }
@@ -412,15 +403,34 @@ a {
 }
 
 @media (min-width: 769px) {
+    #game-area {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
     /* Show controls container on tablets and larger screens */
     #controls-container {
-        display: block;
+        display: flex;
+    }
+
+    /* Adjust controls position based on screen dimensions */
+    @media (orientation: landscape) {
+        #controls-container {
+            flex-direction: column;
+            margin-left: 20px;
+        }
     }
 
     /* Show info panel */
     #info-panel {
         display: flex;
     }
+}
+
+/* Ensure canvas fits within the screen */
+#canvas-container,
+#game-canvas {
+    max-height: 100vh;
 }
 
 /* Scrollbar Styling */
