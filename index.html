@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Politician Tetris</title>
-    <!-- Link to CSS -->
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Link to Custom CSS -->
     <link rel="stylesheet" href="styles.css">
     <!-- Viewport meta tag for mobile responsiveness -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -17,126 +20,157 @@
 <body>
 
     <!-- Instructions Modal -->
-    <div id="instructions-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <h2>How to Play Politician Tetris</h2>
-            <p>Use the on-screen buttons or keyboard keys to move and rotate the blocks:</p>
-            <ul>
-                <li><strong>Left Arrow / Left Button</strong>: Move left</li>
-                <li><strong>Right Arrow / Right Button</strong>: Move right</li>
-                <li><strong>Down Arrow / Down Button</strong>: Move down faster</li>
-                <li><strong>Up Arrow / 'X' Key / Rotate CW Button</strong>: Rotate the block clockwise</li>
-                <li><strong>'Z' Key / Rotate CCW Button</strong>: Rotate the block counter-clockwise</li>
-                <li><strong>'P' Key or Pause Button</strong>: Pause/Resume the game</li>
-            </ul>
-            <p>Plan ahead by looking at the Next Piece displayed on the right.</p>
-            <p>Complete rows to score points. If the majority of the blocks in a completed row are from your chosen side, you gain points; otherwise, you lose points. Clear a row with all the same politician for bonus points!</p>
-            <p>New politicians will join the game as you progress. Good luck!</p>
-            <button id="start-game-button" class="control-button"><i class="fas fa-play"></i> Start Game</button>
+    <div id="instructions-modal" class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="instructionsModalLabel" aria-hidden="true" style="display: block;">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="instructionsModalLabel">How to Play Politician Tetris</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" id="instructions-close-button">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Use the on-screen buttons or keyboard keys to move and rotate the blocks:</p>
+                    <ul>
+                        <li><strong>Left Arrow / Left Button</strong>: Move left</li>
+                        <li><strong>Right Arrow / Right Button</strong>: Move right</li>
+                        <li><strong>Down Arrow / Down Button</strong>: Move down faster</li>
+                        <li><strong>Up Arrow / 'X' Key / Rotate CW Button</strong>: Rotate the block clockwise</li>
+                        <li><strong>'Z' Key / Rotate CCW Button</strong>: Rotate the block counter-clockwise</li>
+                        <li><strong>'P' Key or Pause Button</strong>: Pause/Resume the game</li>
+                    </ul>
+                    <p>Plan ahead by looking at the Next Piece displayed on the right.</p>
+                    <p>Complete rows to score points. If the majority of the blocks in a completed row are from your chosen side, you gain points; otherwise, you lose points. Clear a row with all the same politician for bonus points!</p>
+                    <p>New politicians will join the game as you progress. Good luck!</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="start-game-button" class="btn btn-success"><i class="fas fa-play"></i> Start Game</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Game Over Modal -->
-    <div id="game-over-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <h2>Game Over!</h2>
-            <p id="final-score"></p>
-            <p id="record-message"></p>
-            <img id="impactful-politician-image" src="" alt="" style="width: 100px; height: 100px; display: none;">
-            <p id="impactful-politician-name"></p>
-            <button id="share-button-modal" class="control-button"><i class="fab fa-twitter"></i> Share on Twitter</button>
-            <button id="play-again-button" class="control-button"><i class="fas fa-redo"></i> Play Again</button>
+    <div id="game-over-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gameOverModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="gameOverModalLabel">Game Over!</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" id="game-over-close-button">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <p id="final-score"></p>
+                    <p id="record-message"></p>
+                    <img id="impactful-politician-image" src="" alt="" class="img-fluid rounded-circle mb-3" style="width: 100px; height: 100px; display: none;">
+                    <p id="impactful-politician-name"></p>
+                </div>
+                <div class="modal-footer">
+                    <button id="share-button-modal" class="btn btn-primary"><i class="fab fa-twitter"></i> Share on Twitter</button>
+                    <button id="play-again-button" class="btn btn-success"><i class="fas fa-redo"></i> Play Again</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Mobile Message -->
-    <div id="mobile-message">
+    <div id="mobile-message" class="alert alert-warning text-center d-none">
         <!-- Message for mobile users -->
         <p>Note: You are playing on a mobile device. Touch controls are enabled.</p>
     </div>
 
-    <div id="game-container" style="display: none;">
-        <h1>Politician Tetris</h1>
+    <!-- Game Container -->
+    <div id="game-container" class="container-fluid d-none">
+        <h1 class="text-success my-4 text-center">Politician Tetris</h1>
         <!-- Side Selection -->
-        <div id="side-selection">
+        <div id="side-selection" class="text-center">
             <p>Select Your Side:</p>
-            <button id="democrat-button" class="side-button democrat"><i class="fas fa-dove"></i> Democrat</button>
-            <button id="republican-button" class="side-button republican"><i class="fas fa-elephant"></i> Republican</button>
+            <button id="democrat-button" class="btn btn-primary m-2"><i class="fas fa-dove"></i> Democrat</button>
+            <button id="republican-button" class="btn btn-danger m-2"><i class="fas fa-elephant"></i> Republican</button>
         </div>
         <!-- Game Area -->
-        <div id="game-area">
+        <div id="game-area" class="row no-gutters">
             <!-- Canvas Container -->
-            <div id="canvas-container">
+            <div id="canvas-container" class="col-md-6 col-lg-5 d-flex flex-column align-items-center mb-4">
                 <canvas id="game-canvas" width="300" height="600"></canvas>
                 <!-- Mobile Overlay -->
-                <div id="mobile-overlay">
-                    <div id="current-politician-mobile">
-                        <img id="politician-image-mobile" src="" alt="">
+                <div id="mobile-overlay" class="d-none">
+                    <div id="current-politician-mobile" class="text-center">
+                        <img id="politician-image-mobile" src="" alt="" class="img-fluid rounded-circle">
                         <p id="politician-name-mobile"></p>
                     </div>
-                    <div id="next-piece-mobile">
+                    <div id="next-piece-mobile" class="text-center">
                         <canvas id="next-canvas-mobile" width="50" height="50"></canvas>
                     </div>
-                    <div id="score-board-mobile">Score: 0</div>
+                    <div id="score-board-mobile" class="text-success font-weight-bold">Score: 0</div>
                 </div>
                 <!-- User's Side Display -->
-                <div id="user-side-display">
+                <div id="user-side-display" class="text-center my-2 text-success">
                     <p>You are playing for the <span id="user-side-text"></span> side.</p>
                     <p>Clear as many <span id="user-side-color"></span> blocks as possible!</p>
                 </div>
+                <!-- Controls Container -->
+                <div id="controls-container" class="d-flex justify-content-center my-3 flex-wrap">
+                    <button id="left-button" class="btn btn-secondary m-1"><i class="fas fa-arrow-left"></i></button>
+                    <button id="rotate-ccw-button" class="btn btn-secondary m-1"><i class="fas fa-undo"></i></button>
+                    <button id="down-button" class="btn btn-secondary m-1"><i class="fas fa-arrow-down"></i></button>
+                    <button id="rotate-button" class="btn btn-secondary m-1"><i class="fas fa-redo"></i></button>
+                    <button id="right-button" class="btn btn-secondary m-1"><i class="fas fa-arrow-right"></i></button>
+                </div>
             </div>
             <!-- Info Panel -->
-            <div id="info-panel">
-                <div id="current-politician">
+            <div id="info-panel" class="col-md-6 col-lg-7 d-flex flex-column align-items-center mb-4">
+                <div id="current-politician" class="card bg-secondary text-white my-2 w-100">
                     <!-- Display current falling piece's politician -->
-                    <h3>Current Piece</h3>
-                    <img id="politician-image" src="" alt="">
-                    <p id="politician-name"></p>
-                    <p id="politician-party"></p>
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Current Piece</h5>
+                        <img id="politician-image" src="" alt="" class="img-fluid rounded-circle mb-2" style="width: 80px; height: 80px;">
+                        <p id="politician-name" class="mb-1"></p>
+                        <p id="politician-party" class="mb-0"></p>
+                    </div>
                 </div>
-                <div id="next-piece">
+                <div id="next-piece" class="card bg-secondary text-white my-2 w-100">
                     <!-- Display next piece's shape and politician -->
-                    <h3>Next Piece</h3>
-                    <canvas id="next-canvas" width="100" height="100"></canvas>
-                    <img id="next-politician-image" src="" alt="">
-                    <p id="next-politician-name"></p>
-                    <p id="next-politician-party"></p>
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Next Piece</h5>
+                        <canvas id="next-canvas" width="100" height="100"></canvas>
+                        <img id="next-politician-image" src="" alt="" class="img-fluid rounded-circle mb-2" style="width: 80px; height: 80px;">
+                        <p id="next-politician-name" class="mb-1"></p>
+                        <p id="next-politician-party" class="mb-0"></p>
+                    </div>
                 </div>
-                <div id="score-board">Score: 0</div>
+                <div id="score-board" class="text-success font-weight-bold my-3">Score: 0</div>
                 <!-- Statistics Display -->
-                <div id="statistics">
-                    <h3>Statistics</h3>
-                    <p>Total Lines Cleared: <span id="total-lines-cleared">0</span></p>
-                    <p>Lines Cleared by Democrats: <span id="dem-lines-cleared">0</span></p>
-                    <p>Lines Cleared by Republicans: <span id="rep-lines-cleared">0</span></p>
-                    <p>Democrat Pieces Released: <span id="dem-pieces-released">0</span></p>
-                    <p>Republican Pieces Released: <span id="rep-pieces-released">0</span></p>
+                <div id="statistics" class="card bg-secondary text-white my-2 w-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Statistics</h5>
+                        <p>Total Lines Cleared: <span id="total-lines-cleared">0</span></p>
+                        <p>Lines Cleared by Democrats: <span id="dem-lines-cleared">0</span></p>
+                        <p>Lines Cleared by Republicans: <span id="rep-lines-cleared">0</span></p>
+                        <p>Democrat Pieces Released: <span id="dem-pieces-released">0</span></p>
+                        <p>Republican Pieces Released: <span id="rep-pieces-released">0</span></p>
+                    </div>
                 </div>
-                <div id="announcement"></div>
-                <button id="pause-button" class="control-button"><i class="fas fa-pause"></i> Pause</button>
-            </div>
-            <!-- Controls Container -->
-            <div id="controls-container">
-                <button id="left-button" class="control-button"><i class="fas fa-arrow-left"></i></button>
-                <button id="rotate-ccw-button" class="control-button"><i class="fas fa-undo"></i></button>
-                <button id="down-button" class="control-button"><i class="fas fa-arrow-down"></i></button>
-                <button id="rotate-button" class="control-button"><i class="fas fa-redo"></i></button>
-                <button id="right-button" class="control-button"><i class="fas fa-arrow-right"></i></button>
+                <div id="announcement" class="alert alert-info my-2 w-100" style="display: none;"></div>
+                <button id="pause-button" class="btn btn-warning my-3 w-100"><i class="fas fa-pause"></i> Pause</button>
             </div>
         </div>
     </div>
 
     <!-- Leaderboard -->
-    <div id="leaderboard">
-        <h2><i class="fas fa-trophy"></i> Leaderboard</h2>
-        <ol id="leaderboard-list"></ol>
+    <div id="leaderboard" class="container my-5">
+        <h2 class="text-success"><i class="fas fa-trophy"></i> Leaderboard</h2>
+        <ol id="leaderboard-list" class="list-group list-group-flush"></ol>
     </div>
 
-    <!-- Include jQuery -->
+    <!-- Include jQuery and Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Include Hammer.js for touch gestures -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+    <!-- Include Popper.js and Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <!-- Include your game script -->
     <script src="game.js"></script>
 </body>

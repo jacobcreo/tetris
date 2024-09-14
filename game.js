@@ -7,10 +7,8 @@ $(document).ready(function() {
     // Mobile detection
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-    // Adjust grid size for mobile devices
-    let gridWidth = isMobile ? 8 : 10;
-    let gridHeight = isMobile ? 16 : 20;
-    let blockSize = 30;
+    // Variables for grid size and block size
+    let gridWidth, gridHeight, blockSize;
     let isPaused = false;
     let grid = null; // Initialize as null
     let currentPiece;
@@ -239,27 +237,30 @@ $(document).ready(function() {
         "Can you beat my {score} points in Politician Tetris? {side}s rule!"
     ];
 
+    // Show the instructions modal on page load
+    $('#instructions-modal').modal({ backdrop: 'static', keyboard: false });
+
     // Hide the game container initially
-    $('#game-container').hide();
+    $('#game-container').addClass('d-none');
 
     // Show mobile message if on mobile
     if (isMobile) {
-        $('#mobile-message').show();
+        $('#mobile-message').removeClass('d-none');
     }
-
-    // Event handler for closing the instructions modal
-    $('.close-button').click(function() {
-        $('#instructions-modal').hide();
-        $('#side-selection').show();
-        $('#game-container').show();
-        resizeCanvas();
-    });
 
     // Event handler for the start game button
     $('#start-game-button').click(function() {
-        $('#instructions-modal').hide();
+        $('#instructions-modal').modal('hide');
+        $('#game-container').removeClass('d-none');
         $('#side-selection').show();
-        $('#game-container').show();
+        resizeCanvas();
+    });
+
+    // Event handler for closing the instructions modal
+    $('#instructions-close-button').click(function() {
+        $('#instructions-modal').modal('hide');
+        $('#game-container').removeClass('d-none');
+        $('#side-selection').show();
         resizeCanvas();
     });
 
@@ -276,7 +277,6 @@ $(document).ready(function() {
         $('#leaderboard').show();
         $('#user-side-display').show();
         $('#statistics').show(); // Show statistics
-        resizeCanvas();
         startGame();
     });
 
@@ -292,7 +292,6 @@ $(document).ready(function() {
         $('#leaderboard').show();
         $('#user-side-display').show();
         $('#statistics').show(); // Show statistics
-        resizeCanvas();
         startGame();
     });
 
@@ -301,7 +300,7 @@ $(document).ready(function() {
         score = 0;
         updateScore();
         politicianScoreCount = {};
-        $('#announcement').text('');
+        $('#announcement').text('').hide();
         gameOver = false;
         gameEnded = false;
         piecesSpawned = 0;
@@ -313,6 +312,9 @@ $(document).ready(function() {
         demPiecesReleased = 0;
         repPiecesReleased = 0;
         updateStatistics();
+
+        // Adjust grid size and block size based on window size
+        adjustGridAndBlockSize();
 
         // Initialize grid
         grid = [];
@@ -357,6 +359,24 @@ $(document).ready(function() {
         // Handle window focus and visibility change
         document.addEventListener('visibilitychange', handleVisibilityChange);
         window.addEventListener('blur', handleWindowBlur);
+
+        // Adjust canvas size
+        resizeCanvas();
+    }
+
+    function adjustGridAndBlockSize() {
+        const canvasContainer = document.getElementById('canvas-container');
+        const availableWidth = canvasContainer.clientWidth;
+        const availableHeight = window.innerHeight - canvasContainer.getBoundingClientRect().top - 200; // Adjusted height
+
+        // Decide grid dimensions based on orientation
+        gridWidth = 10;
+        gridHeight = 20;
+
+        // Calculate block size to fit canvas within available space
+        blockSize = Math.min(availableWidth / gridWidth, availableHeight / gridHeight);
+        canvas.width = blockSize * gridWidth;
+        canvas.height = blockSize * gridHeight;
     }
 
     function preventScroll(e) {
@@ -668,7 +688,7 @@ $(document).ready(function() {
                 const multiLineMessage = getRandomElement(multiLineAnnouncements).replace('{lines}', linesCleared);
                 messages.unshift(multiLineMessage);
             }
-            $('#announcement').html(messages.join('<br>'));
+            $('#announcement').html(messages.join('<br>')).show();
             updateScore();
         }
     }
@@ -896,7 +916,7 @@ $(document).ready(function() {
         $('#record-message').text(recordMessage);
 
         // Show game over modal
-        $('#game-over-modal').show();
+        $('#game-over-modal').modal('show');
 
         // Update share button
         $('#share-button-modal').off('click'); // Remove previous click handlers
@@ -909,7 +929,7 @@ $(document).ready(function() {
         // Play again button
         $('#play-again-button').off('click'); // Remove previous click handlers
         $('#play-again-button').click(function() {
-            $('#game-over-modal').hide();
+            $('#game-over-modal').modal('hide');
             startGame();
         });
     }
@@ -966,12 +986,8 @@ $(document).ready(function() {
 
     // Resize canvas function
     function resizeCanvas() {
-        const canvasContainer = document.getElementById('canvas-container');
-        const width = canvasContainer.clientWidth;
-        const height = (gridHeight / gridWidth) * width;
-        canvas.width = width;
-        canvas.height = height;
-        blockSize = width / gridWidth;
+        // Adjust grid size and block size
+        adjustGridAndBlockSize();
 
         // Adjust controls layout based on screen dimensions
         adjustControlsLayout();
@@ -991,9 +1007,9 @@ $(document).ready(function() {
         if (windowWidth > windowHeight) {
             // Wide screen, place controls next to the canvas
             $('#controls-container').css({
-                'flex-direction': 'column',
-                'margin-left': '20px',
-                'margin-top': '0'
+                'flex-direction': 'row',
+                'margin-left': '0',
+                'margin-top': '20px'
             });
             $('#game-area').css({
                 'flex-direction': 'row',
@@ -1107,4 +1123,10 @@ $(document).ready(function() {
     function handleWindowBlur() {
         if (!isPaused) togglePause();
     }
+
+    // Call resizeCanvas on page load
+    resizeCanvas();
+
+    // Resize canvas on window resize
+    window.addEventListener('resize', resizeCanvas);
 });
