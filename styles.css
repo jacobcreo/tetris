@@ -191,7 +191,7 @@ a {
 }
 
 #mobile-controls {
-    margin-top: 20px;
+    display: none; /* Hidden since we're using touch gestures */
 }
 
 .mobile-button {
@@ -233,8 +233,7 @@ a {
     font-size: 1.2em;
 }
 
-#side-selection,
-#mobile-controls {
+#side-selection {
     display: none;
 }
 
@@ -305,7 +304,12 @@ a {
     border: 2px solid #00d1b2;
 }
 
+/* Media Queries for Mobile Adaptation */
 @media (max-width: 768px) {
+    body {
+        overflow-y: auto; /* Allow vertical scrolling on mobile */
+    }
+
     #game-area {
         flex-direction: column;
         align-items: center;
@@ -315,14 +319,43 @@ a {
         flex-direction: row;
         justify-content: center;
         flex-wrap: wrap;
+        margin-left: 0;
     }
 
     #current-politician, #next-piece, #statistics {
         margin: 10px;
+        width: 150px;
     }
 
     #leaderboard {
         margin-top: 20px;
+    }
+
+    #announcement {
+        font-size: 1em;
+        margin: 10px;
+    }
+
+    #canvas-container {
+        max-width: 100%;
+    }
+
+    #game-canvas {
+        height: 60vh; /* Adjust height for visibility */
+    }
+
+    #user-side-display {
+        font-size: 0.9em;
+    }
+
+    #score-board {
+        font-size: 1.2em;
+    }
+
+    /* Adjust modal content for mobile */
+    .modal-content {
+        margin: 20% auto;
+        padding: 20px;
     }
 }
 

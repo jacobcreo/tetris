@@ -61,12 +61,7 @@
         </div>
 
         <!-- On-screen controls for mobile devices -->
-        <div id="mobile-controls">
-            <button id="left-button" class="mobile-button"><i class="fas fa-arrow-left"></i></button>
-            <button id="rotate-button" class="mobile-button"><i class="fas fa-sync-alt"></i></button>
-            <button id="right-button" class="mobile-button"><i class="fas fa-arrow-right"></i></button>
-            <button id="down-button" class="mobile-button"><i class="fas fa-arrow-down"></i></button>
-        </div>
+        <!-- Removed buttons to save screen real estate, using touch gestures instead -->
     </div>
 
     <!-- Instructions Modal -->
@@ -76,10 +71,10 @@
             <h2>How to Play Politician Tetris</h2>
             <p>Use the on-screen buttons or arrow keys to move and rotate the blocks:</p>
             <ul>
-                <li><strong>Left Button/Arrow</strong>: Move left</li>
-                <li><strong>Right Button/Arrow</strong>: Move right</li>
-                <li><strong>Down Button/Arrow</strong>: Move down faster</li>
-                <li><strong>Rotate Button/Up Arrow</strong>: Rotate the block</li>
+                <li><strong>Swipe Left</strong>: Move left</li>
+                <li><strong>Swipe Right</strong>: Move right</li>
+                <li><strong>Swipe Down</strong>: Move down faster</li>
+                <li><strong>Tap</strong>: Rotate the block</li>
                 <li><strong>'P' Key or Pause Button</strong>: Pause/Resume the game</li>
             </ul>
             <p>Plan ahead by looking at the Next Piece displayed on the right.</p>
@@ -110,6 +105,8 @@
 
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include Hammer.js for touch gestures -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
     <!-- Include your game script -->
     <script src="game.js"></script>
 </body>

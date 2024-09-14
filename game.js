@@ -266,7 +266,6 @@ $(document).ready(function() {
         $('#score-board').show();
         $('#pause-button').show();
         $('#leaderboard').show();
-        $('#mobile-controls').show();
         $('#user-side-display').show();
         resizeCanvas();
         startGame();
@@ -282,7 +281,6 @@ $(document).ready(function() {
         $('#score-board').show();
         $('#pause-button').show();
         $('#leaderboard').show();
-        $('#mobile-controls').show();
         $('#user-side-display').show();
         resizeCanvas();
         startGame();
@@ -330,6 +328,9 @@ $(document).ready(function() {
 
         // Prevent scrolling on key presses
         window.addEventListener('keydown', preventScroll, false);
+
+        // Initialize touch controls
+        initTouchControls();
     }
 
     function preventScroll(e) {
@@ -339,11 +340,6 @@ $(document).ready(function() {
     }
 
     function generateRandomPiece() {
-        piecesSpawned++;
-
-        // Determine available politicians based on pieces spawned
-        let availablePoliticians = getAvailablePoliticians();
-
         // Choose a random side
         const sides = ['democrat', 'republican'];
         const side = sides[Math.floor(Math.random() * sides.length)];
@@ -355,6 +351,9 @@ $(document).ready(function() {
             repPiecesReleased++;
         }
         updateStatistics();
+
+        // Determine available politicians based on pieces spawned
+        let availablePoliticians = getAvailablePoliticians();
 
         // Choose a random politician from the side
         const politicianList = availablePoliticians[side];
@@ -415,6 +414,9 @@ $(document).ready(function() {
     }
 
     function spawnPiece() {
+        // Increment piecesSpawned when a new piece is spawned
+        piecesSpawned++;
+
         // Set current piece to next piece
         currentPiece = nextPiece;
 
@@ -759,6 +761,9 @@ $(document).ready(function() {
         $(document).off('keydown', handleInput);
         window.removeEventListener('keydown', preventScroll);
 
+        // Remove touch controls
+        removeTouchControls();
+
         // Determine the politician who affected the score the most
         let maxImpact = 0;
         let impactfulPolitician = null;
@@ -879,25 +884,39 @@ $(document).ready(function() {
 
     window.addEventListener('resize', resizeCanvas);
 
-    // Mobile Controls
-    $('#left-button').on('touchstart mousedown', function(e) {
-        e.preventDefault();
-        movePiece(-1);
-    });
+    // Touch Controls using Hammer.js
+    let mc; // Hammer manager
 
-    $('#right-button').on('touchstart mousedown', function(e) {
-        e.preventDefault();
-        movePiece(1);
-    });
+    function initTouchControls() {
+        mc = new Hammer.Manager(canvas);
 
-    $('#down-button').on('touchstart mousedown', function(e) {
-        e.preventDefault();
-        movePieceDown();
-    });
+        let Swipe = new Hammer.Swipe();
+        let Tap = new Hammer.Tap();
 
-    $('#rotate-button').on('touchstart mousedown', function(e) {
-        e.preventDefault();
-        rotatePiece();
-    });
+        mc.add(Swipe);
+        mc.add(Tap);
 
+        mc.on('swipeleft', function() {
+            movePiece(-1);
+        });
+
+        mc.on('swiperight', function() {
+            movePiece(1);
+        });
+
+        mc.on('swipedown', function() {
+            movePieceDown();
+        });
+
+        mc.on('tap', function() {
+            rotatePiece();
+        });
+    }
+
+    function removeTouchControls() {
+        if (mc) {
+            mc.destroy();
+            mc = null;
+        }
+    }
 });
