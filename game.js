@@ -2,11 +2,14 @@
 $(document).ready(function() {
     const canvas = $('#game-canvas')[0];
     const context = canvas.getContext('2d');
-    const nextCanvas = $('#next-canvas')[0];
-    const nextContext = nextCanvas.getContext('2d');
+    let nextCanvas, nextContext;
 
-    let gridWidth = 10;
-    let gridHeight = 20;
+    // Mobile detection
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    // Adjust grid size for mobile devices
+    let gridWidth = isMobile ? 8 : 10;
+    let gridHeight = isMobile ? 16 : 20;
     let blockSize = 30;
     let isPaused = false;
     let grid = [];
@@ -331,6 +334,19 @@ $(document).ready(function() {
 
         // Initialize touch controls
         initTouchControls();
+
+        // Handle window focus and visibility change
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        window.addEventListener('blur', handleWindowBlur);
+
+        // For mobile, initialize mobile overlay
+        if (isMobile) {
+            nextCanvas = $('#next-canvas-mobile')[0];
+            nextContext = nextCanvas.getContext('2d');
+        } else {
+            nextCanvas = $('#next-canvas')[0];
+            nextContext = nextCanvas.getContext('2d');
+        }
     }
 
     function preventScroll(e) {
@@ -431,9 +447,14 @@ $(document).ready(function() {
     }
 
     function updateCurrentPoliticianDisplay(politician) {
-        $('#politician-image').attr('src', politician.imageSrc);
-        $('#politician-name').text(politician.name);
-        $('#politician-party').text('Party: ' + politician.party);
+        if (isMobile) {
+            $('#politician-image-mobile').attr('src', politician.imageSrc);
+            $('#politician-name-mobile').text(politician.name);
+        } else {
+            $('#politician-image').attr('src', politician.imageSrc);
+            $('#politician-name').text(politician.name);
+            $('#politician-party').text('Party: ' + politician.party);
+        }
     }
 
     function updateNextPieceDisplay(piece) {
@@ -469,10 +490,12 @@ $(document).ready(function() {
             }
         }
 
-        // Update next politician info
-        $('#next-politician-image').attr('src', piece.politician.imageSrc);
-        $('#next-politician-name').text(piece.politician.name);
-        $('#next-politician-party').text('Party: ' + piece.politician.party);
+        if (!isMobile) {
+            // Update next politician info
+            $('#next-politician-image').attr('src', piece.politician.imageSrc);
+            $('#next-politician-name').text(piece.politician.name);
+            $('#next-politician-party').text('Party: ' + piece.politician.party);
+        }
     }
 
     function gameLoop() {
@@ -645,7 +668,11 @@ $(document).ready(function() {
     }
 
     function updateScore() {
-        $('#score-board').text('Score: ' + score);
+        if (isMobile) {
+            $('#score-board-mobile').text('Score: ' + score);
+        } else {
+            $('#score-board').text('Score: ' + score);
+        }
     }
 
     function updateStatistics() {
@@ -763,6 +790,10 @@ $(document).ready(function() {
 
         // Remove touch controls
         removeTouchControls();
+
+        // Remove visibility and focus listeners
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+        window.removeEventListener('blur', handleWindowBlur);
 
         // Determine the politician who affected the score the most
         let maxImpact = 0;
@@ -890,7 +921,7 @@ $(document).ready(function() {
     function initTouchControls() {
         mc = new Hammer.Manager(canvas);
 
-        let Swipe = new Hammer.Swipe();
+        let Swipe = new Hammer.Swipe({ direction: Hammer.DIRECTION_ALL });
         let Tap = new Hammer.Tap();
 
         mc.add(Swipe);
@@ -908,6 +939,10 @@ $(document).ready(function() {
             movePieceDown();
         });
 
+        mc.on('swipeup', function() {
+            // Implement hard drop if desired
+        });
+
         mc.on('tap', function() {
             rotatePiece();
         });
@@ -918,5 +953,16 @@ $(document).ready(function() {
             mc.destroy();
             mc = null;
         }
+    }
+
+    // Auto-pause when window loses focus or canvas is not visible
+    function handleVisibilityChange() {
+        if (document.hidden) {
+            if (!isPaused) togglePause();
+        }
+    }
+
+    function handleWindowBlur() {
+        if (!isPaused) togglePause();
     }
 });

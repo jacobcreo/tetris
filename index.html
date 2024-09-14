@@ -23,6 +23,17 @@
         <div id="game-area">
             <div id="canvas-container">
                 <canvas id="game-canvas" width="300" height="600"></canvas>
+                <!-- Overlay for essential info on mobile -->
+                <div id="mobile-overlay">
+                    <div id="current-politician-mobile">
+                        <img id="politician-image-mobile" src="" alt="">
+                        <p id="politician-name-mobile"></p>
+                    </div>
+                    <div id="next-piece-mobile">
+                        <canvas id="next-canvas-mobile" width="50" height="50"></canvas>
+                    </div>
+                    <div id="score-board-mobile">Score: 0</div>
+                </div>
                 <!-- User's Side Display -->
                 <div id="user-side-display">
                     <p>You are playing for the <span id="user-side-text"></span> side.</p>
@@ -59,9 +70,6 @@
                 <button id="pause-button" class="control-button"><i class="fas fa-pause"></i> Pause</button>
             </div>
         </div>
-
-        <!-- On-screen controls for mobile devices -->
-        <!-- Removed buttons to save screen real estate, using touch gestures instead -->
     </div>
 
     <!-- Instructions Modal -->
