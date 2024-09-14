@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Politician Tetris</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Viewport meta tag for mobile responsiveness -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+    <div id="game-container">
+        <h1>Politician Tetris</h1>
+        <div id="side-selection">
+            <p>Select Your Side:</p>
+            <button id="democrat-button">Democrat</button>
+            <button id="republican-button">Republican</button>
+        </div>
+        <div id="game-area">
+            <div id="canvas-container">
+                <canvas id="game-canvas" width="300" height="600"></canvas>
+            </div>
+            <div id="current-politician">
+                <!-- Display current falling piece's politician -->
+                <h3>Current Piece</h3>
+                <img id="politician-image" src="" alt="">
+                <p id="politician-name"></p>
+                <p id="politician-party"></p>
+            </div>
+            <div id="next-piece">
+                <!-- Display next piece's shape and politician -->
+                <h3>Next Piece</h3>
+                <canvas id="next-canvas" width="100" height="100"></canvas>
+                <img id="next-politician-image" src="" alt="">
+                <p id="next-politician-name"></p>
+                <p id="next-politician-party"></p>
+            </div>
+        </div>
+        <div id="score-board">Score: 0</div>
+        <div id="announcement"></div>
+        <button id="pause-button">Pause</button>
+    </div>
+
+    <!-- Instructions Modal -->
+    <div id="instructions-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>How to Play Politician Tetris</h2>
+            <p>Use the on-screen buttons or arrow keys to move and rotate the blocks:</p>
+            <ul>
+                <li><strong>Left Button/Arrow</strong>: Move left</li>
+                <li><strong>Right Button/Arrow</strong>: Move right</li>
+                <li><strong>Down Button/Arrow</strong>: Move down faster</li>
+                <li><strong>Rotate Button/Up Arrow</strong>: Rotate the block</li>
+                <li><strong>'P' Key or Pause Button</strong>: Pause/Resume the game</li>
+            </ul>
+            <p>Plan ahead by looking at the Next Piece displayed on the right.</p>
+            <p>Complete rows to score points. If the majority of the blocks in a completed row are from your chosen side, you gain points; otherwise, you lose points. Clear a row with all the same politician for bonus points!</p>
+            <p>New politicians will join the game as you progress. Good luck!</p>
+            <button id="start-game-button">Start Game</button>
+        </div>
+    </div>
+
+    <!-- On-screen controls for mobile devices -->
+    <div id="mobile-controls">
+        <button id="left-button">Left</button>
+        <button id="rotate-button">Rotate</button>
+        <button id="right-button">Right</button>
+        <button id="down-button">Down</button>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div id="game-over-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2>Game Over!</h2>
+            <p id="final-score"></p>
+            <p id="record-message"></p>
+            <img id="impactful-politician-image" src="" alt="" style="width: 100px; height: 100px;">
+            <p id="impactful-politician-name"></p>
+            <button id="share-button-modal">Share on Twitter</button>
+            <button id="play-again-button">Play Again</button>
+        </div>
+    </div>
+
+    <!-- Leaderboard -->
+    <div id="leaderboard">
+        <h2>Leaderboard</h2>
+        <ol id="leaderboard-list"></ol>
+    </div>
+
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include your game script -->
+    <script src="game.js"></script>
+</body>
+</html>

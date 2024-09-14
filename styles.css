@@ -1,0 +1,150 @@
+body {
+    text-align: center;
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent scrolling */
+}
+
+#game-container {
+    display: inline-block;
+    margin-top: 20px;
+}
+
+#side-selection {
+    margin-bottom: 20px;
+}
+
+#game-area {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+#canvas-container {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+#game-canvas {
+    border: 1px solid #000;
+    background-color: #fff;
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+}
+
+#current-politician, #next-piece {
+    margin-left: 20px;
+    text-align: center;
+}
+
+#current-politician img, #next-politician-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+#next-canvas {
+    border: 1px solid #000;
+    background-color: #fff;
+    margin-bottom: 10px;
+}
+
+#score-board {
+    margin-top: 10px;
+    font-size: 20px;
+}
+
+#announcement {
+    margin-top: 10px;
+    font-size: 16px;
+    height: 40px;
+}
+
+#pause-button {
+    margin-top: 10px;
+}
+
+#leaderboard {
+    margin-top: 20px;
+}
+
+#leaderboard-list {
+    list-style-type: decimal;
+    padding-left: 20px;
+    text-align: left;
+    display: inline-block;
+}
+
+#side-selection,
+#mobile-controls {
+    display: none;
+}
+
+/* Modal styling */
+.modal {
+    display: block; /* Show the modal by default */
+    position: fixed;
+    z-index: 2; /* Higher than the game elements */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.8);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    width: 80%;
+    max-width: 500px;
+    text-align: center;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#game-over-modal {
+    display: none; /* Hidden by default */
+}
+
+#game-over-modal img {
+    margin: 10px 0;
+}
+
+/* Mobile Controls */
+#mobile-controls {
+    margin-top: 10px;
+}
+
+#mobile-controls button {
+    width: 60px;
+    height: 60px;
+    margin: 5px;
+    font-size: 16px;
+}
+
+/* Prevent text selection on buttons */
+button {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
