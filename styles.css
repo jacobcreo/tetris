@@ -3,6 +3,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    -webkit-tap-highlight-color: transparent; /* Prevent tap highlight */
 }
 
 body {
@@ -13,6 +14,8 @@ body {
     padding: 0;
     overflow: hidden; /* Prevent scrolling */
     color: #ffffff;
+    -ms-touch-action: manipulation; /* Disable double-tap zoom for IE */
+    touch-action: manipulation; /* Disable double-tap zoom */
 }
 
 h1 {
@@ -383,7 +386,8 @@ a {
 @media (min-width: 769px) {
     /* Show on-screen controls on tablets and larger screens */
     #on-screen-controls {
-        display: block;
+        display: flex;
+        justify-content: center;
     }
 
     /* Show info panel */

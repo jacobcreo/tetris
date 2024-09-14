@@ -321,7 +321,7 @@ $(document).ready(function() {
             }
         }
 
-        // For mobile, initialize mobile overlay
+        // Initialize next piece canvas
         if (isMobile) {
             nextCanvas = $('#next-canvas-mobile')[0];
             nextContext = nextCanvas.getContext('2d');
@@ -418,11 +418,11 @@ $(document).ready(function() {
             // Next 5 pieces: Add Joe Biden and Ted Cruz
             democratPoliticians.push(...politicians.democrat.filter(p => ['Kamala Harris', 'Tim Walz', 'Joe Biden'].includes(p.name)));
             republicanPoliticians.push(...politicians.republican.filter(p => ['Donald Trump', 'JD Vance', 'Ted Cruz'].includes(p.name)));
-        } else if (maxPieces <=25) {
+        } else if (maxPieces <= 25) {
             // Next 5 pieces: Add Taylor Swift and Elon Musk
             democratPoliticians.push(...politicians.democrat.filter(p => ['Kamala Harris', 'Tim Walz', 'Joe Biden', 'Taylor Swift'].includes(p.name)));
             republicanPoliticians.push(...politicians.republican.filter(p => ['Donald Trump', 'JD Vance', 'Ted Cruz', 'Elon Musk'].includes(p.name)));
-        } else if (maxPieces <=30) {
+        } else if (maxPieces <= 30) {
             // Next 5 pieces: Add Nancy Pelosi and Ben Shapiro
             democratPoliticians.push(...politicians.democrat.filter(p => ['Kamala Harris', 'Tim Walz', 'Joe Biden', 'Taylor Swift', 'Nancy Pelosi'].includes(p.name)));
             republicanPoliticians.push(...politicians.republican.filter(p => ['Donald Trump', 'JD Vance', 'Ted Cruz', 'Elon Musk', 'Ben Shapiro'].includes(p.name)));
@@ -495,6 +495,16 @@ $(document).ready(function() {
                             nextBlockSize,
                             nextBlockSize
                         );
+                    } else {
+                        piece.politician.image.onload = function() {
+                            nextContext.drawImage(
+                                piece.politician.image,
+                                col * nextBlockSize,
+                                row * nextBlockSize,
+                                nextBlockSize,
+                                nextBlockSize
+                            );
+                        };
                     }
                 }
             }
@@ -931,25 +941,39 @@ $(document).ready(function() {
         mc.add(Swipe);
         mc.add(Tap);
 
-        mc.on('swipeleft', function() {
+        mc.on('swipeleft', function(e) {
+            e.preventDefault();
             movePiece(-1);
         });
 
-        mc.on('swiperight', function() {
+        mc.on('swiperight', function(e) {
+            e.preventDefault();
             movePiece(1);
         });
 
-        mc.on('swipedown', function() {
+        mc.on('swipedown', function(e) {
+            e.preventDefault();
             movePieceDown();
         });
 
-        mc.on('swipeup', function() {
+        mc.on('swipeup', function(e) {
+            e.preventDefault();
             // Implement hard drop if desired
         });
 
-        mc.on('tap', function() {
+        mc.on('tap', function(e) {
+            e.preventDefault();
             rotatePiece();
         });
+
+        // Prevent double-tap zoom
+        mc.get('tap').set({ enable: true, taps: 1 });
+
+        canvas.addEventListener('touchstart', function(e) {
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
     }
 
     function removeTouchControls() {
@@ -961,19 +985,23 @@ $(document).ready(function() {
 
     // Initialize on-screen buttons for tablets and larger screens
     function initOnScreenButtons() {
-        $('#left-button').click(function() {
+        $('#left-button').on('touchstart mousedown', function(e) {
+            e.preventDefault();
             movePiece(-1);
         });
 
-        $('#right-button').click(function() {
+        $('#right-button').on('touchstart mousedown', function(e) {
+            e.preventDefault();
             movePiece(1);
         });
 
-        $('#down-button').click(function() {
+        $('#down-button').on('touchstart mousedown', function(e) {
+            e.preventDefault();
             movePieceDown();
         });
 
-        $('#rotate-button').click(function() {
+        $('#rotate-button').on('touchstart mousedown', function(e) {
+            e.preventDefault();
             rotatePiece();
         });
     }
