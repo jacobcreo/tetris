@@ -12,7 +12,7 @@ $(document).ready(function() {
     let gridHeight = isMobile ? 16 : 20;
     let blockSize = 30;
     let isPaused = false;
-    let grid = [];
+    let grid = null; // Initialize as null
     let currentPiece;
     let nextPiece;
     let score = 0;
@@ -751,10 +751,16 @@ $(document).ready(function() {
     }
 
     function draw() {
+        // **Check if grid is initialized**
+        if (!grid || grid.length === 0) {
+            return;
+        }
+
         context.clearRect(0, 0, canvas.width, canvas.height);
 
         // Draw grid
         for (let row = 0; row < gridHeight; row++) {
+            if (!grid[row]) continue; // Skip if grid row is undefined
             for (let col = 0; col < gridWidth; col++) {
                 if (grid[row][col]) {
                     drawCell(col, row, grid[row][col].politician);
@@ -763,11 +769,13 @@ $(document).ready(function() {
         }
 
         // Draw current piece
-        const { x, y, shape, politician } = currentPiece;
-        for (let row = 0; row < shape.length; row++) {
-            for (let col = 0; col < shape[row].length; col++) {
-                if (shape[row][col]) {
-                    drawCell(x + col, y + row, politician);
+        if (currentPiece) {
+            const { x, y, shape, politician } = currentPiece;
+            for (let row = 0; row < shape.length; row++) {
+                for (let col = 0; col < shape[row].length; col++) {
+                    if (shape[row][col]) {
+                        drawCell(x + col, y + row, politician);
+                    }
                 }
             }
         }
@@ -933,7 +941,11 @@ $(document).ready(function() {
         canvas.width = width;
         canvas.height = height;
         blockSize = width / gridWidth;
-        draw(); // Redraw after resizing
+
+        // **Only call draw() if grid is initialized**
+        if (grid && grid.length > 0) {
+            draw(); // Redraw after resizing
+        }
     }
 
     window.addEventListener('resize', resizeCanvas);
