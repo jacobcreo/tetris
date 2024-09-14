@@ -46,7 +46,7 @@ $(document).ready(function() {
             {
                 name: 'Kamala Harris',
                 party: 'Democrat',
-                color: '#0074d9', // Updated colors to match new design
+                color: '#0074d9',
                 imageSrc: 'images/kamala.png',
                 image: new Image()
             },
@@ -242,6 +242,11 @@ $(document).ready(function() {
     // Hide the game container initially
     $('#game-container').hide();
 
+    // Show mobile message if on mobile
+    if (isMobile) {
+        $('#mobile-message').show();
+    }
+
     // Event handler for closing the instructions modal
     $('.close-button').click(function() {
         $('#instructions-modal').hide();
@@ -343,6 +348,11 @@ $(document).ready(function() {
 
         // Initialize touch controls
         initTouchControls();
+
+        // Initialize on-screen buttons if not mobile
+        if (!isMobile) {
+            initOnScreenButtons();
+        }
 
         // Handle window focus and visibility change
         document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -584,10 +594,8 @@ $(document).ready(function() {
                         politicianCount[politicianName] = 1;
                     }
 
-                    // Update politician score count
-                    if (politicianScoreCount[politicianName]) {
-                        politicianScoreCount[politicianName] += 0; // No score change here
-                    } else {
+                    // Initialize politician score count if necessary
+                    if (!politicianScoreCount[politicianName]) {
                         politicianScoreCount[politicianName] = 0;
                     }
                 }
@@ -621,11 +629,7 @@ $(document).ready(function() {
 
                 // Update politician score count
                 for (let polName in politicianCount) {
-                    if (politicianScoreCount[polName]) {
-                        politicianScoreCount[polName] += pointsChanged / Object.keys(politicianCount).length;
-                    } else {
-                        politicianScoreCount[polName] = pointsChanged / Object.keys(politicianCount).length;
-                    }
+                    politicianScoreCount[polName] += pointsChanged / Object.keys(politicianCount).length;
                 }
 
                 // Update lines cleared statistics
@@ -953,6 +957,25 @@ $(document).ready(function() {
             mc.destroy();
             mc = null;
         }
+    }
+
+    // Initialize on-screen buttons for tablets and larger screens
+    function initOnScreenButtons() {
+        $('#left-button').click(function() {
+            movePiece(-1);
+        });
+
+        $('#right-button').click(function() {
+            movePiece(1);
+        });
+
+        $('#down-button').click(function() {
+            movePieceDown();
+        });
+
+        $('#rotate-button').click(function() {
+            rotatePiece();
+        });
     }
 
     // Auto-pause when window loses focus or canvas is not visible

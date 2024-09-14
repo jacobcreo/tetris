@@ -15,6 +15,10 @@
 
     <div id="game-container">
         <h1>Politician Tetris</h1>
+        <div id="mobile-message">
+            <!-- Message for mobile users -->
+            <p>Note: This game is best played on a desktop or tablet for an optimal experience.</p>
+        </div>
         <div id="side-selection">
             <p>Select Your Side:</p>
             <button id="democrat-button" class="side-button democrat"><i class="fas fa-dove"></i> Democrat</button>
@@ -38,6 +42,13 @@
                 <div id="user-side-display">
                     <p>You are playing for the <span id="user-side-text"></span> side.</p>
                     <p>Clear as many <span id="user-side-color"></span> blocks as possible!</p>
+                </div>
+                <!-- On-screen controls for tablets and larger screens -->
+                <div id="on-screen-controls">
+                    <button id="left-button" class="control-button"><i class="fas fa-arrow-left"></i></button>
+                    <button id="rotate-button" class="control-button"><i class="fas fa-redo"></i></button>
+                    <button id="right-button" class="control-button"><i class="fas fa-arrow-right"></i></button>
+                    <button id="down-button" class="control-button"><i class="fas fa-arrow-down"></i></button>
                 </div>
             </div>
             <div id="info-panel">
@@ -79,10 +90,10 @@
             <h2>How to Play Politician Tetris</h2>
             <p>Use the on-screen buttons or arrow keys to move and rotate the blocks:</p>
             <ul>
-                <li><strong>Swipe Left</strong>: Move left</li>
-                <li><strong>Swipe Right</strong>: Move right</li>
-                <li><strong>Swipe Down</strong>: Move down faster</li>
-                <li><strong>Tap</strong>: Rotate the block</li>
+                <li><strong>Left Arrow / Left Button</strong>: Move left</li>
+                <li><strong>Right Arrow / Right Button</strong>: Move right</li>
+                <li><strong>Down Arrow / Down Button</strong>: Move down faster</li>
+                <li><strong>Up Arrow / Rotate Button</strong>: Rotate the block</li>
                 <li><strong>'P' Key or Pause Button</strong>: Pause/Resume the game</li>
             </ul>
             <p>Plan ahead by looking at the Next Piece displayed on the right.</p>
