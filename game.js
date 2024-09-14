@@ -316,6 +316,15 @@ $(document).ready(function() {
             }
         }
 
+        // For mobile, initialize mobile overlay
+        if (isMobile) {
+            nextCanvas = $('#next-canvas-mobile')[0];
+            nextContext = nextCanvas.getContext('2d');
+        } else {
+            nextCanvas = $('#next-canvas')[0];
+            nextContext = nextCanvas.getContext('2d');
+        }
+
         // Generate next piece
         nextPiece = generateRandomPiece();
 
@@ -338,15 +347,6 @@ $(document).ready(function() {
         // Handle window focus and visibility change
         document.addEventListener('visibilitychange', handleVisibilityChange);
         window.addEventListener('blur', handleWindowBlur);
-
-        // For mobile, initialize mobile overlay
-        if (isMobile) {
-            nextCanvas = $('#next-canvas-mobile')[0];
-            nextContext = nextCanvas.getContext('2d');
-        } else {
-            nextCanvas = $('#next-canvas')[0];
-            nextContext = nextCanvas.getContext('2d');
-        }
     }
 
     function preventScroll(e) {
